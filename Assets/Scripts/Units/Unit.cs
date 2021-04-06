@@ -9,6 +9,8 @@ public class Unit : NetworkBehaviour
 {
     //UnitCommandGiver sınıfından Unit nesnesi üzerinden UnitMovement'taki fonksiyonlara erişmek için referans oluştur
     [SerializeField] private UnitMovement unitMovement = null;
+    //UnitCommandGiver sınıfından Unit nesnesi üzerinden Targeter'daki fonksiyonlara erişmek için referans oluştur
+    [SerializeField] private Targeter targeter = null;
     [SerializeField] private UnityEvent onSelected = null;
     [SerializeField] private UnityEvent onDeselected = null;
     //sunucu tarafında Unit örneğinin oluşturulduğu zaman fırlatılacak event
@@ -22,6 +24,11 @@ public class Unit : NetworkBehaviour
     public UnitMovement GetUnitMovement()
     {
         return this.unitMovement;
+    }
+
+    public Targeter GetTargeter()
+    {
+        return this.targeter;
     }
 
     #region Server

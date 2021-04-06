@@ -55,14 +55,18 @@ public class UnitSelectionHandler : MonoBehaviour
 
     private void StartSelectionArea()
     {
-        //seçili olan tüm Unitlerin highlightını kaldır
-        foreach (Unit selectedUnit in SelectedUnits)
+        //eğer left shift basmıyorsam seçili unitlerimi kaldır. tuşuna basıyorsam mevcut seçili unitlerimi kaldırma, yenilerini ekle
+        if (!Keyboard.current.leftShiftKey.isPressed)
         {
-            selectedUnit.Deselect();
-        }
+            //seçili olan tüm Unitlerin highlightını kaldır
+            foreach (Unit selectedUnit in SelectedUnits)
+            {
+                selectedUnit.Deselect();
+            }
 
-        //seçili unit listemi temizle
-        SelectedUnits.Clear();
+            //seçili unit listemi temizle
+            SelectedUnits.Clear();
+        }
 
         //aynı zamanda disable olan multi select areamızı enable ediyoruz
         unitSelectionArea.gameObject.SetActive(true);
@@ -123,6 +127,9 @@ public class UnitSelectionHandler : MonoBehaviour
         //unitlerimiz WorldSpace
         foreach (Unit unit in player.GetMyUnits())
         {
+            //shift ile yeni unitler seçtiğimizde aynı unitler için tekrar aşağıdaki bloğa girmemesi için...
+            if (SelectedUnits.Contains(unit)) { continue; }
+
             //unitimizin Screen positionunu almak için...
             Vector3 screenPosition = mainCamera.WorldToScreenPoint(unit.transform.position);
 
