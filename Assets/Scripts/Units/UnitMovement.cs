@@ -10,6 +10,8 @@ public class UnitMovement : NetworkBehaviour
     [SerializeField] private NavMeshAgent agent = null;
     //Targeter sınıfımızdaki metotlara erişebilmek için inspectordan attach ettik ve referans oluşturduk.
     [SerializeField] private Targeter targeter = null;
+    //Takip limit mesafemiz için bir range tutuyoruz.
+    [SerializeField] private float chaseRange = 10f;
 
 
     #region Server
@@ -19,10 +21,27 @@ public class UnitMovement : NetworkBehaviour
     [ServerCallback]
     private void Update()
     {
+        Targetable target = targeter.GetTarget();
+
+        //Unitimizin bir targetı var, takip ettiği bir düşman varsa...
+        if (target != null)
+        {
+            //eğer takip devam ediyorsa... targetımız ve unitimiz arasındaki mesafe chaseRangeimizden büyük ise
+            //Vector3.Distance() da kullanılabilirdi fakat performans için pek uygun değil
+            if ((target.transform.position - transform.position).sqrMagnitude > chaseRange * chaseRange)
+            {
+                agent.SetDestination(target.transform.position);
+            }//eğer takip devam etmiyorsa... targetimiz ve unitimiz arası mesafe yeteri kadar yakın. takibi bırak.
+            //dipnot sadece takip bırakılıyor. hala hedefimiz mevcut. hedef uzaklaşırsa tekrar takibe başlanacak
+            else if (agent.hasPath)
+            {
+                agent.ResetPath();
+            }
+            return;
+        }
+        //Eğer Unitimizin hedefi yok, sıradan bir movement gerçekleştirecek ise...
         //aşağıdaki logic ile örneğin 3 unit birbirini sürekli itecek iken, sırayla ilk varan itmeyi bırakıyor
         //böylece sırası ile pathleri resetlenerek itişme bitiyor
-
-
         //tıklama aksiyonumuz aynı frame içine denk geldiğinde ortaya çıkan bugı engellemek için...
         if (!agent.hasPath) { return; }
 

@@ -7,7 +7,14 @@ using Mirror;
 public class Targeter : NetworkBehaviour
 {
     //hedef objemizi tutmak için referans yaratıyoruz
-    [SerializeField] private Targetable target;
+    private Targetable target;
+
+    //UnitMovement classından erişip targetı takip etmek için kullanacağız getterı
+
+    public Targetable GetTarget()
+    {
+        return this.target;
+    }
 
     #region Server
 

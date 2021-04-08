@@ -11,8 +11,10 @@ public class RTSNetworkManager : NetworkManager
     {
         base.OnServerAddPlayer(conn);
 
+        //sunucuda bir UnitSpawner örneği oluştur
         GameObject unitSpawnerInstance = Instantiate(unitSpawnerPrefab, conn.identity.transform.position, conn.identity.transform.rotation);
 
+        //sunucuda oluşan UnitSpawner örneğini player ile ilişkilendir connection üzerinden
         NetworkServer.Spawn(unitSpawnerInstance, conn);
     }
 }

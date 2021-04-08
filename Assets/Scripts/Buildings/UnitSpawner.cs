@@ -27,6 +27,7 @@ public class UnitSpawner : NetworkBehaviour, IPointerClickHandler
 
     #region Client
 
+    //Client, sunucuya "benim için unit oluştur" diyor
     public void OnPointerClick(PointerEventData eventData)
     {
         //eğer left mouse button ile UnitSpawner a basıldı ise gerekli aksiyonları al
