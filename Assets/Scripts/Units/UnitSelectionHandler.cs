@@ -25,6 +25,14 @@ public class UnitSelectionHandler : MonoBehaviour
     private void Start()
     {
         mainCamera = Camera.main;
+
+        //Unit yokedildiğinde elimizdeki unit listesinden de silinmesi için yokedilme eventini dinlemeye başlıyoruz
+        Unit.AuthorityOnUnitDespawned += AuthorityHandleUnitDespawned;
+    }
+
+    private void OnDestroy()
+    {
+        Unit.AuthorityOnUnitDespawned -= AuthorityHandleUnitDespawned;
     }
 
     private void Update()
@@ -140,5 +148,13 @@ public class UnitSelectionHandler : MonoBehaviour
                 unit.Select();
             }
         }
+    }
+
+
+    //unitlerimizden biri öldüğünde SelectedUnits listemizden de silinmesi için...
+    private void AuthorityHandleUnitDespawned(Unit unit)
+    {
+        //listede olmaması kontrolüne gerek yok. hata fırlatmaz Remove fonksiyonu
+        SelectedUnits.Remove(unit);
     }
 }

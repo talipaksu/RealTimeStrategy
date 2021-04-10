@@ -9,10 +9,14 @@ public class Health : NetworkBehaviour
     [SerializeField] private int maxHealth = 100;
 
     //currentHealth bu obje için tüm clientlarda senkron olmalı
-    [SyncVar]
+    [SyncVar(hook = nameof(HandleHealthUpdated))]
     private int currenthHealth;
 
     public event Action ServerOnDie;
+
+    //health değişikliklerinde fırlatılacak event, ilk parametre current health ikinci parametre max health
+    //clientta fırlatılacak
+    public event Action<int, int> ClientOnHealthUpdated;
 
     #region Server
 
@@ -34,13 +38,19 @@ public class Health : NetworkBehaviour
 
         //canın tükendiğini gerekli yerlere bildirmek için event fırlat
         ServerOnDie?.Invoke();
-
-        Debug.Log("We died!");
     }
 
     #endregion
 
     #region Client
+
+    //health çalıştığında tetiklenecek method
+    //syncvar değişkenimize hook olarak verdik
+    //event tetikleyecek ve HealthDisplay scriptimizden yakalayacağız
+    private void HandleHealthUpdated(int oldHealth, int newHealth)
+    {
+        ClientOnHealthUpdated?.Invoke(newHealth, maxHealth);
+    }
 
     #endregion
 }

@@ -44,34 +44,36 @@ public class RTSPlayer : NetworkBehaviour
     #endregion
 
     #region Client
-
-    public override void OnStartClient()
+    //OnStartClient ı değiştirdik. Çünkü Authority'miz olmayan nesneler için bile dinlemeye başlıyorduk. Bu garip bir yaklaşım olurdu 
+    public override void OnStartAuthority()
     {
-        //Player nesnesi Clientta oluşturulduğu zaman,ve sadece Clientta çalışıyorsa (Host + Client değil) Unitteki static Eventlar dinlenilmeye başlanıyor
-        if (!isClientOnly) { return; }
+        //!isClientOnly yi kaldırdık. Çünkü isClientOnly player objemiz oluşturulduğunda doğruyu gösteriyor
+        //sunucu değil isek kontrolü için...
+        //Bu makine sunucu olarak çalışıyorsa fonksiyondan çık
+        if (NetworkServer.active) { return; }
         Unit.AuthorityOnUnitSpawned += AuthorityHandleUnitSpawned;
         Unit.AuthorityOnUnitDespawned += AuthorityHandleUnitDespawned;
     }
 
     public override void OnStopClient()
     {
-        //Player nesnesi Clientta kaldırıldığı zaman,ve sadece Clientta çalışıyorsa (Host + Client değil) Unitteki static Eventlar dinlenilmeyi bırakıyor
-        if (!isClientOnly) { return; }
+        //sunucu isek ya da yetkimiz yoksa fonksiyondan çık
+        if (!isClientOnly || !hasAuthority) { return; }
         Unit.AuthorityOnUnitSpawned -= AuthorityHandleUnitSpawned;
         Unit.AuthorityOnUnitDespawned -= AuthorityHandleUnitDespawned;
     }
 
     private void AuthorityHandleUnitSpawned(Unit unit)
     {
+        //authority checkini kaldırdık. çünkü çağrıldığı zaten bu kontrolü yapıyor
         //Yetkim dahilinde ise clientta bulunan myUnits listesine ilgili Unit ekleniyor
-        if (!hasAuthority) { return; }
         myUnits.Add(unit);
     }
 
     private void AuthorityHandleUnitDespawned(Unit unit)
     {
+        //authority checkini kaldırdık. çünkü çağrıldığı zaten bu kontrolü yapıyor
         //Yetkim dahilinde ise clientta bulunan myUnits listesinden ilgili Unit kaldırılıyor
-        if (!hasAuthority) { return; }
         myUnits.Remove(unit);
     }
 
