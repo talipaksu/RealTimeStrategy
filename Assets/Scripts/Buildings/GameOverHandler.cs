@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -9,6 +10,11 @@ public class GameOverHandler : NetworkBehaviour
     //Ayrıca networkde spawnlanması gerek. Unityde bir GameObject'e bağladık
     //Herhangi bir playerdan bağımsız olduğu için, bağımsız bir GameObject e bağlanmalı
     //spawn işini RTSNetworkManager'da yapıyoruz
+
+    //Oyun bitince kazanan oyuncuyu göstermek adına client tarafında fırlatılacak bir event tanımlıyoruz.
+    //kazanan oyuncunun adını parametre alacak
+    public static event Action<String> ClientOnGameOver;
+
 
     private List<UnitBase> bases = new List<UnitBase>();
 
@@ -39,12 +45,22 @@ public class GameOverHandler : NetworkBehaviour
         //hala birden fazla oyuncu varsa fonksiyondan çık
         if (bases.Count != 1) { return; }
 
-        Debug.Log("Game Over");
+        //Sunucunun clientlara oyunun bittiğini bildirmesi gerek
+        int playerId = bases[0].connectionToClient.connectionId;
+
+        RpcGameOver($"Player {playerId}");
     }
 
     #endregion
 
     #region Client
+
+    [ClientRpc]
+    private void RpcGameOver(string winner)
+    {
+        //bu eventi UI yakalayarak ekrana kimin kazandığını bastıracak.
+        ClientOnGameOver?.Invoke(winner);
+    }
 
     #endregion
 }
