@@ -16,6 +16,17 @@ public class UnitMovement : NetworkBehaviour
 
     #region Server
 
+    public override void OnStartServer()
+    {
+        //oyun bittiğinde mevcutta hareket eden bir obje varsa pathini nullamak için...
+        GameOverHandler.ServerOnGameOver += ServerHandleGameOver;
+    }
+
+    public override void OnStopServer()
+    {
+        GameOverHandler.ServerOnGameOver -= ServerHandleGameOver;
+    }
+
     //Sunucuda çalışır, clientta çağrılırken de warning logu atmaz consola. Eğer sadece [Server] deseydik clientlarda consola warning atardı
     //Bunu çağrımını kontrol edemediğimiz fonksiyonlarda yapıyoruz
     [ServerCallback]
@@ -64,6 +75,12 @@ public class UnitMovement : NetworkBehaviour
         }
         //nesneyi position konumuna yönlendir
         agent.SetDestination(hit.position);
+    }
+
+    [Server]
+    private void ServerHandleGameOver()
+    {
+        agent.ResetPath();
     }
 
     #endregion

@@ -16,6 +16,15 @@ public class UnitCommandGiver : MonoBehaviour
     private void Start()
     {
         mainCamera = Camera.main;
+
+        //Oyun bitince komutların verilmemesi için GameOverHandler daki client taraflı ClientOnGameOver eventini dinlemeye başlıyoruz.
+        //Oyun bitince komutların verilmemesi. scripti disable edecek bir metod çağırıyoruz
+        GameOverHandler.ClientOnGameOver += ClientHandleGameOver;
+    }
+
+    private void OnDestroy()
+    {
+        GameOverHandler.ClientOnGameOver -= ClientHandleGameOver;
     }
 
     private void Update()
@@ -62,5 +71,10 @@ public class UnitCommandGiver : MonoBehaviour
         {
             unit.GetTargeter().CmdSetTarget(target.gameObject);
         }
+    }
+
+    private void ClientHandleGameOver(string winnerName)
+    {
+        enabled = false;
     }
 }

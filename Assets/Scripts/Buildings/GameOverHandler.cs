@@ -11,6 +11,10 @@ public class GameOverHandler : NetworkBehaviour
     //Herhangi bir playerdan bağımsız olduğu için, bağımsız bir GameObject e bağlanmalı
     //spawn işini RTSNetworkManager'da yapıyoruz
 
+
+    //oyunun bitişini göstermek amacıyla server tarafında fırlatılacak bir event tanımlıyoruz
+    public static event Action ServerOnGameOver;
+
     //Oyun bitince kazanan oyuncuyu göstermek adına client tarafında fırlatılacak bir event tanımlıyoruz.
     //kazanan oyuncunun adını parametre alacak
     public static event Action<String> ClientOnGameOver;
@@ -49,6 +53,8 @@ public class GameOverHandler : NetworkBehaviour
         int playerId = bases[0].connectionToClient.connectionId;
 
         RpcGameOver($"Player {playerId}");
+
+        ServerOnGameOver?.Invoke();
     }
 
     #endregion

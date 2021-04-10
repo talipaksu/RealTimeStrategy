@@ -18,6 +18,18 @@ public class Targeter : NetworkBehaviour
 
     #region Server
 
+
+    public override void OnStartServer()
+    {
+        //oyun bittiğinde mevcutta saldıran bir obje varsa targetını nullamak için...
+        GameOverHandler.ServerOnGameOver += ServerHandleGameOver;
+    }
+
+    public override void OnStopServer()
+    {
+        GameOverHandler.ServerOnGameOver -= ServerHandleGameOver;
+    }
+
     //Client, sunucuya hedef almak istediği targetı bildirir
     [Command]
     public void CmdSetTarget(GameObject targetGameObject)
@@ -30,6 +42,12 @@ public class Targeter : NetworkBehaviour
 
     [Server]
     public void ClearTarget()
+    {
+        target = null;
+    }
+
+    [Server]
+    private void ServerHandleGameOver()
     {
         target = null;
     }

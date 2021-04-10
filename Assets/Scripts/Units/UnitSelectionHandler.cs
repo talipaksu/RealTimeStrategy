@@ -28,11 +28,16 @@ public class UnitSelectionHandler : MonoBehaviour
 
         //Unit yokedildiğinde elimizdeki unit listesinden de silinmesi için yokedilme eventini dinlemeye başlıyoruz
         Unit.AuthorityOnUnitDespawned += AuthorityHandleUnitDespawned;
+
+        //Oyun bitince selectionların yapılmaması için GameOverHandler daki client taraflı ClientOnGameOver eventini dinlemeye başlıyoruz.
+        //oyun bitince artık selection yapılmaması gerek. scripti disable edecek bir metod çağırıyoruz
+        GameOverHandler.ClientOnGameOver += ClientHandleGameOver;
     }
 
     private void OnDestroy()
     {
         Unit.AuthorityOnUnitDespawned -= AuthorityHandleUnitDespawned;
+        GameOverHandler.ClientOnGameOver -= ClientHandleGameOver;
     }
 
     private void Update()
@@ -156,5 +161,10 @@ public class UnitSelectionHandler : MonoBehaviour
     {
         //listede olmaması kontrolüne gerek yok. hata fırlatmaz Remove fonksiyonu
         SelectedUnits.Remove(unit);
+    }
+
+    private void ClientHandleGameOver(String winnerName)
+    {
+        enabled = false;
     }
 }
