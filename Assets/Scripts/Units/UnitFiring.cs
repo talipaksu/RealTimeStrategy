@@ -5,14 +5,14 @@ using Mirror;
 
 public class UnitFiring : NetworkBehaviour
 {
-    //target nesnemiz için referans yaratıyoruz.
+    //targeter nesnemiz için referans yaratıyoruz.
     [SerializeField] private Targeter targeter = null;
     [SerializeField] private GameObject projectilePrefab = null;
     //mermilerin oluşmaya başlayacağı konum.
     [SerializeField] private Transform projectileSpawnPoint = null;
     //Atış menzili
     [SerializeField] private float fireRange = 5f;
-    //Saniyede kaç adet mermi atılacak
+    //Saniyede kaç adet mermi atılacak (1/fireRate)
     [SerializeField] private float fireRate = 1f;
     //Yönünü hedefe dönme hızı
     [SerializeField] private float rotationSpeed = 20f;

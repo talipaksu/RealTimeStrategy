@@ -7,8 +7,7 @@ using UnityEngine;
 public class GameOverDisplay : MonoBehaviour
 {
     //GameOverDisplay prefabi oyun sceneında koyuldu
-    //Oyun başladığında GameOverHandlerdaki eventi dinleyerek oyun sonunda kazanan ismi gösterecek
-
+    //Oyun başladığında GameOverHandlerdaki ClientOnGameOver eventini dinleyerek oyun sonunda kazanan ismi gösterecek
     
     [SerializeField] private GameObject gameOverDisplayParent = null;
     //Önyüzde kazanan oyuncuyu gösterecek text mesh pro text nesnesine referans veriyoruz

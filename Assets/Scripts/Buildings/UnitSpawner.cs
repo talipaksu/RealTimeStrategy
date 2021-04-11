@@ -27,6 +27,7 @@ public class UnitSpawner : NetworkBehaviour, IPointerClickHandler
     [Server]
     private void ServerHandleDie()
     {
+        //Bu artık UnitBase de yapılıyor
         //NetworkServer.Destroy(this.gameObject);
     }
 
@@ -45,7 +46,6 @@ public class UnitSpawner : NetworkBehaviour, IPointerClickHandler
 
     #region Client
 
-    //Client, sunucuya "benim için unit oluştur" diyor
     public void OnPointerClick(PointerEventData eventData)
     {
         //eğer left mouse button ile UnitSpawner a basıldı ise gerekli aksiyonları al
@@ -54,6 +54,7 @@ public class UnitSpawner : NetworkBehaviour, IPointerClickHandler
         //clientta çalıştığı için başka playerların nesnesine müdahale etmemek adına Authority kontrolü yap
         if (!hasAuthority) { return; }
 
+        //Client, sunucuya "benim için unit oluştur" diyor
         CmdSpawnUnit();
     }
 

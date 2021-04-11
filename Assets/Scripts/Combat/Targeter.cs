@@ -10,7 +10,6 @@ public class Targeter : NetworkBehaviour
     private Targetable target;
 
     //UnitMovement classından erişip targetı takip etmek için kullanacağız getterı
-
     public Targetable GetTarget()
     {
         return this.target;

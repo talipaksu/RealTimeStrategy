@@ -5,12 +5,19 @@ using Mirror;
 
 public class RTSPlayer : NetworkBehaviour
 {
-    [SerializeField] private List<Unit> myUnits = new List<Unit>();
+    private List<Unit> myUnits = new List<Unit>();
+    private List<Building> myBuildings = new List<Building>();
 
     //playera ait olan unitlara erişebilmek için...
     public List<Unit> GetMyUnits()
     {
         return myUnits;
+    }
+
+    //playera ait olan buildinglara erişebilmek için...
+    public List<Building> GetMyBuildings()
+    {
+        return myBuildings;
     }
 
     #region Server
@@ -19,6 +26,10 @@ public class RTSPlayer : NetworkBehaviour
         //Player nesnesi Serverda oluşturulduğu zaman, Unitteki static Eventlar dinlenilmeye başlanıyor
         Unit.ServerOnUnitSpawned += ServerHandleUnitSpawned;
         Unit.ServerOnUnitDespawned += ServerHandleUnitDespawned;
+
+        //Player nesnesi Serverda oluşturulduğu zaman, Buildingdeki static Eventlar dinlenilmeye başlanıyor
+        Building.ServerOnBuildingSpawned += ServerHandleBuildingSpawned;
+        Building.ServerOnBuildingDespawned += ServerHandleBuildingDespawned;
     }
 
     public override void OnStopServer()
@@ -26,6 +37,10 @@ public class RTSPlayer : NetworkBehaviour
         //Player nesnesi Serverda kaldırıldığı zaman, Unitteki static Eventlar dinlenilmeyi bırakıyor
         Unit.ServerOnUnitSpawned -= ServerHandleUnitSpawned;
         Unit.ServerOnUnitDespawned -= ServerHandleUnitDespawned;
+
+        //Player nesnesi Serverda kaldırıldığı zaman, Buildingdeki static Eventlar dinlenilmeyi bırakıyor
+        Building.ServerOnBuildingSpawned -= ServerHandleBuildingSpawned;
+        Building.ServerOnBuildingDespawned -= ServerHandleBuildingDespawned;
     }
 
     private void ServerHandleUnitSpawned(Unit unit)
@@ -41,6 +56,21 @@ public class RTSPlayer : NetworkBehaviour
         if (unit.connectionToClient.connectionId != connectionToClient.connectionId) { return; }
         myUnits.Remove(unit);
     }
+
+    private void ServerHandleBuildingSpawned(Building building)
+    {
+        //Server tarafındaki player örneğinde tutulan myBuilding listesine, eğer yeni oluşturulan building clienttaki örneğimle ilişkili ise, unit ekleniyor
+        if (building.connectionToClient.connectionId != connectionToClient.connectionId) { return; }
+        myBuildings.Add(building);
+    }
+
+    private void ServerHandleBuildingDespawned(Building building)
+    {
+        //Server tarafındaki player örneğinde tutulan myBuilding listesine, eğer kaldırılan building clienttaki örneğimle ilişkili ise, unit kaldırılıyor
+        if (building.connectionToClient.connectionId != connectionToClient.connectionId) { return; }
+        myBuildings.Remove(building);
+    }
+
     #endregion
 
     #region Client
@@ -53,6 +83,9 @@ public class RTSPlayer : NetworkBehaviour
         if (NetworkServer.active) { return; }
         Unit.AuthorityOnUnitSpawned += AuthorityHandleUnitSpawned;
         Unit.AuthorityOnUnitDespawned += AuthorityHandleUnitDespawned;
+
+        Building.AuthorityOnBuildingSpawned += AuthorityHandleBuildingSpawned;
+        Building.AuthorityOnBuildingDespawned += AuthorityHandleBuildingDespawned;
     }
 
     public override void OnStopClient()
@@ -61,6 +94,9 @@ public class RTSPlayer : NetworkBehaviour
         if (!isClientOnly || !hasAuthority) { return; }
         Unit.AuthorityOnUnitSpawned -= AuthorityHandleUnitSpawned;
         Unit.AuthorityOnUnitDespawned -= AuthorityHandleUnitDespawned;
+
+        Building.AuthorityOnBuildingSpawned -= AuthorityHandleBuildingSpawned;
+        Building.AuthorityOnBuildingDespawned -= AuthorityHandleBuildingDespawned;
     }
 
     private void AuthorityHandleUnitSpawned(Unit unit)
@@ -75,6 +111,21 @@ public class RTSPlayer : NetworkBehaviour
         //authority checkini kaldırdık. çünkü çağrıldığı zaten bu kontrolü yapıyor
         //Yetkim dahilinde ise clientta bulunan myUnits listesinden ilgili Unit kaldırılıyor
         myUnits.Remove(unit);
+    }
+
+
+    private void AuthorityHandleBuildingSpawned(Building building)
+    {
+        //authority checkini kaldırdık. çünkü çağrıldığı zaten bu kontrolü yapıyor
+        //Yetkim dahilinde ise clientta bulunan myBuildings listesine ilgili building ekleniyor
+        myBuildings.Add(building);
+    }
+
+    private void AuthorityHandleBuildingDespawned(Building building)
+    {
+        //authority checkini kaldırdık. çünkü çağrıldığı zaten bu kontrolü yapıyor
+        //Yetkim dahilinde ise clientta bulunan myBuildings listesinden ilgili building kaldırılıyor
+        myBuildings.Remove(building);
     }
 
     #endregion

@@ -9,6 +9,7 @@ public class Health : NetworkBehaviour
     [SerializeField] private int maxHealth = 100;
 
     //currentHealth bu obje için tüm clientlarda senkron olmalı
+    //HealthDisplay UI ında yakalayabilmek için ClientOnHealthUpdated eventını bu fonksiyondan fırlatıyoruz 
     [SyncVar(hook = nameof(HandleHealthUpdated))]
     private int currenthHealth;
 
