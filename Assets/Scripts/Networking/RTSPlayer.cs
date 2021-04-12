@@ -5,6 +5,9 @@ using Mirror;
 
 public class RTSPlayer : NetworkBehaviour
 {
+    //Oyun genelindeki building çeşitlerini tutmak amaçlı bir dizi oluşturuyoruz.
+    //Boyutunu 0 verdik ama Unityde Inspectordan listeye build eklemesini yaptık Player objemiz üzerinden
+    [SerializeField] private Building[] buildings = new Building[0];
     private List<Unit> myUnits = new List<Unit>();
     private List<Building> myBuildings = new List<Building>();
 
@@ -42,6 +45,35 @@ public class RTSPlayer : NetworkBehaviour
         Building.ServerOnBuildingSpawned -= ServerHandleBuildingSpawned;
         Building.ServerOnBuildingDespawned -= ServerHandleBuildingDespawned;
     }
+
+    //Buildingi inşa edecek fonksiyondur. BuildingButton scriptinden clientımız sunucuya "buraya building kur" diyecek ve bu fonksiyonu çağıracak
+    //bütün objeyi networkte göndermek yerine sadece id sini göndererek sunucudan ilgili buildingi inşa etmesini istiyoruz
+    [Command]
+    public void CmdTryPlaceBuilding(int buildingId, Vector3 point)
+    {
+        Building buildingToPlace = null;
+
+        //tüm building çeşitlerimizi tutan listemizi dön
+        foreach (Building building in buildings)
+        {
+            //oluşturmak istediğimiz building bu listede ise onu al ve looptan çık
+            if (building.GetId() == buildingId)
+            {
+                buildingToPlace = building;
+                break;
+            }
+        }
+
+        //eğer bulamadıysak fonksiyondan çık.
+        if (buildingToPlace == null) { return; }
+
+        //istenen konumda istenen buildingimizi oluştur
+        GameObject buildingInstance = Instantiate(buildingToPlace.gameObject, point, buildingToPlace.transform.rotation);
+
+        //clientımızla ilişkilendir
+        NetworkServer.Spawn(buildingInstance, connectionToClient);
+    }
+
 
     private void ServerHandleUnitSpawned(Unit unit)
     {
