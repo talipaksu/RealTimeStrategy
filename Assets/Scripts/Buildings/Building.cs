@@ -6,6 +6,8 @@ using System;
 
 public class Building : NetworkBehaviour
 {
+    //Buildingin visual ögeleri için referans. Bunu buildingi inşa etmek için iconumuza tıkladığımızda ekrana sürüklerken kullanacağız
+    [SerializeField] private GameObject buildingPreview = null;
     //building iconlarına referans
     [SerializeField] private Sprite icon = null;
     //buildingleri networkta göndermek amaçlı unique id tutacağız 1 2 3 4 gibi. -1 invalid değerdir.
@@ -25,6 +27,11 @@ public class Building : NetworkBehaviour
     public static event Action<Building> AuthorityOnBuildingDespawned;
 
     //başka claslardan erişim ihtiyacı doğacak. getterlarımızı oluşturuyoruz
+    public GameObject GetBuildingPreview()
+    {
+        return this.buildingPreview;
+    }
+
     public Sprite GetIcon()
     {
         return this.icon;
