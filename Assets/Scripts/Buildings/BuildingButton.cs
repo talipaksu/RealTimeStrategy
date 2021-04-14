@@ -12,8 +12,11 @@ using UnityEngine.UI;
 public class BuildingButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     //Butonun sunacağı buildingi ifade eder
+    //oyun sahnesine koyacağımız prefab örneğinde bu özelleştirilecek. örneğin spawner building tipi için UnitSpawner verilecek
     [SerializeField] private Building building = null;
+    //Buildingteki icon set edilecektir.
     [SerializeField] private Image iconImage = null;
+    //Buildingteki price değeri set edilecektir.
     [SerializeField] private TMP_Text priceText = null;
     //buildinglerimizi floor üzerine kuracağımız için LayerMask adını floorMask olarak verdik
     [SerializeField] private LayerMask floorMask = new LayerMask();
@@ -68,6 +71,7 @@ public class BuildingButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 
+        //floor layermaskında ray, sonsuz uzaklık içerisinde bir cisme çarptıysa
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, floorMask))
         {
             //place building

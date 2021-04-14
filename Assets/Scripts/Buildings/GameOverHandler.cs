@@ -49,9 +49,10 @@ public class GameOverHandler : NetworkBehaviour
         //hala birden fazla oyuncu varsa fonksiyondan çık
         if (bases.Count != 1) { return; }
 
-        //Sunucunun clientlara oyunun bittiğini bildirmesi gerek
+        //son kalan oyuncunun bilgilerine connectionId üzerinden erişiyoruz
         int playerId = bases[0].connectionToClient.connectionId;
 
+        //Sunucunun clientlara oyunun bittiğini bildirmesi gerek
         RpcGameOver($"Player {playerId}");
 
         ServerOnGameOver?.Invoke();

@@ -2,14 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System;
 
 public class RTSPlayer : NetworkBehaviour
 {
     //Oyun genelindeki building çeşitlerini tutmak amaçlı bir dizi oluşturuyoruz.
     //Boyutunu 0 verdik ama Unityde Inspectordan listeye build eklemesini yaptık Player objemiz üzerinden
     [SerializeField] private Building[] buildings = new Building[0];
+
+    //resources sunucuda tutulacak, oyuncular tarafından hacklenmesini istemeyiz
+    //sunucu değeri değiştirince clientlara, value değişti der ve ClientHandleResourcesUpdated metodu clientlarda çalışır
+    [SyncVar(hook = nameof(ClientHandleResourcesUpdated))]
+    private int resources = 500;
+    public event Action<int> ClientOnResourcesUpdated;
+
     private List<Unit> myUnits = new List<Unit>();
     private List<Building> myBuildings = new List<Building>();
+
+    public int GetResources()
+    {
+        return this.resources;
+    }
+
+    [Server]
+    public void SetResources(int newResources)
+    {
+        this.resources = newResources;
+    }
 
     //playera ait olan unitlara erişebilmek için...
     public List<Unit> GetMyUnits()
@@ -22,6 +41,8 @@ public class RTSPlayer : NetworkBehaviour
     {
         return myBuildings;
     }
+
+
 
     #region Server
     public override void OnStartServer()
@@ -129,6 +150,11 @@ public class RTSPlayer : NetworkBehaviour
 
         Building.AuthorityOnBuildingSpawned -= AuthorityHandleBuildingSpawned;
         Building.AuthorityOnBuildingDespawned -= AuthorityHandleBuildingDespawned;
+    }
+
+    private void ClientHandleResourcesUpdated(int oldResources, int newResources)
+    {
+        ClientOnResourcesUpdated?.Invoke(newResources);
     }
 
     private void AuthorityHandleUnitSpawned(Unit unit)
