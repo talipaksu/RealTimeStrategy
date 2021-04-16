@@ -22,6 +22,7 @@ public class BuildingButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     [SerializeField] private LayerMask floorMask = new LayerMask();
 
     private Camera mainCamera;
+    private BoxCollider buildingCollider;
     private RTSPlayer player;
     //sürükleyip konumlandırmaya çalışırken gerçek objeyi değil sadece görüntüsünü göreceğiz, o yüzden geçici bir GameObject oluşturuyoruz.
     private GameObject buildingPreviewInstance;
@@ -37,6 +38,8 @@ public class BuildingButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         //oyun boyunca icon ve price değişmeyeceği için burada set ediyoruz.
         iconImage.sprite = building.GetIcon();
         priceText.text = building.GetPrice().ToString();
+
+        buildingCollider = building.GetComponent<BoxCollider>();
     }
 
     private void Update()
@@ -56,6 +59,9 @@ public class BuildingButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     public void OnPointerDown(PointerEventData eventData)
     {
         if (eventData.button != PointerEventData.InputButton.Left) { return; }
+
+        //yeteri kaynak var mı
+        if (player.GetResources() < building.GetPrice()) { return; }
 
         buildingPreviewInstance = Instantiate(building.GetBuildingPreview());
         buildingRendererInstance = buildingPreviewInstance.GetComponentInChildren<Renderer>();
@@ -95,6 +101,12 @@ public class BuildingButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         {
             buildingPreviewInstance.SetActive(true);
         }
+
+        //buildingi yerleştireceğimiz konumun uygunluğuna göre building preview ın rengini değiştireceğiz
+        Color color = player.CanPlaceBuilding(buildingCollider, hit.point) ? Color.green : Color.red;
+
+        buildingRendererInstance.material.SetColor("_BaseColor", color);
+
     }
 
 }

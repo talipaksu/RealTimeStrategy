@@ -6,9 +6,13 @@ using System;
 
 public class RTSPlayer : NetworkBehaviour
 {
+    [SerializeField] private LayerMask buildingBlockLayer = new LayerMask();
+
     //Oyun genelindeki building çeşitlerini tutmak amaçlı bir dizi oluşturuyoruz.
     //Boyutunu 0 verdik ama Unityde Inspectordan listeye build eklemesini yaptık Player objemiz üzerinden
     [SerializeField] private Building[] buildings = new Building[0];
+
+    [SerializeField] private float buildingRangeLimit = 5f;
 
     //resources sunucuda tutulacak, oyuncular tarafından hacklenmesini istemeyiz
     //sunucu değeri değiştirince clientlara, value değişti der ve ClientHandleResourcesUpdated metodu clientlarda çalışır
@@ -43,6 +47,23 @@ public class RTSPlayer : NetworkBehaviour
     }
 
 
+    //yeni oluşturulacak buildingin, diğer buildinglerimize yakınlığı kontrol ediliyor
+    //yakınsa true, değilse false döndürür
+    public bool CanPlaceBuilding(BoxCollider buildingCollider, Vector3 point)
+    {
+        if (Physics.CheckBox(point + buildingCollider.center, buildingCollider.size / 2, Quaternion.identity, buildingBlockLayer)) { return false; }
+
+        foreach (Building building in myBuildings)
+        {
+            if ((point - building.transform.position).sqrMagnitude <= buildingRangeLimit * buildingRangeLimit)
+            {
+                //fazla yakın
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     #region Server
     public override void OnStartServer()
@@ -88,11 +109,24 @@ public class RTSPlayer : NetworkBehaviour
         //eğer bulamadıysak fonksiyondan çık.
         if (buildingToPlace == null) { return; }
 
+        //yeteri kadar paramız yoksa fonksiyondan çık
+        if (resources < buildingToPlace.GetPrice()) { return; }
+
+        //overlap kontrolü için...
+        BoxCollider buildingCollider = buildingToPlace.GetComponent<BoxCollider>();
+
+        //fazla yakınsa fonksiyondan çık
+        if (!CanPlaceBuilding(buildingCollider, point)) { return; }
+
         //istenen konumda istenen buildingimizi oluştur
         GameObject buildingInstance = Instantiate(buildingToPlace.gameObject, point, buildingToPlace.transform.rotation);
 
         //clientımızla ilişkilendir
         NetworkServer.Spawn(buildingInstance, connectionToClient);
+
+        //oluşturulacak buildingin maliyetini resourcesımızdan düş
+        SetResources(resources - buildingToPlace.GetPrice());
+
     }
 
 
