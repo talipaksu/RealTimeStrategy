@@ -7,6 +7,7 @@ using System;
 
 public class Unit : NetworkBehaviour
 {
+    [SerializeField] private int resourceCost = 10;
     //nesnenin yokedildiğinde olacakları yönetmek için healthtan bir referans oluşturuyoruz
     [SerializeField] private Health health = null;
     //UnitCommandGiver sınıfından Unit nesnesi üzerinden UnitMovement'taki fonksiyonlara erişmek için referans oluştur
@@ -23,6 +24,12 @@ public class Unit : NetworkBehaviour
     public static event Action<Unit> AuthorityOnUnitSpawned;
     //client tarafında Unit örneğinin kaldırıldığı zaman fırlatılacak event
     public static event Action<Unit> AuthorityOnUnitDespawned;
+
+    public int GetResourceCost()
+    {
+        return this.resourceCost;
+    }
+
     public UnitMovement GetUnitMovement()
     {
         return this.unitMovement;

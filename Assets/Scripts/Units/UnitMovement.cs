@@ -53,7 +53,7 @@ public class UnitMovement : NetworkBehaviour
         //Eğer Unitimizin hedefi yok, sıradan bir movement gerçekleştirecek ise...
         //aşağıdaki logic ile örneğin 3 unit birbirini sürekli itecek iken, sırayla ilk varan itmeyi bırakıyor
         //böylece sırası ile pathleri resetlenerek itişme bitiyor
-        
+
         //tıklama aksiyonumuz aynı frame içine denk geldiğinde ortaya çıkan bugı engellemek için...
         if (!agent.hasPath) { return; }
 
@@ -66,6 +66,12 @@ public class UnitMovement : NetworkBehaviour
 
     [Command]
     public void CmdMove(Vector3 position)
+    {
+        ServerMove(position);
+    }
+
+    [Server]
+    public void ServerMove(Vector3 position)
     {
         //hedef alındıktan sonra herhangi bir yere tıklandığında targetların temizlenmesi için...
         targeter.ClearTarget();
