@@ -20,18 +20,20 @@ public class RTSPlayer : NetworkBehaviour
     private int resources = 500;
     public event Action<int> ClientOnResourcesUpdated;
 
+    //takımların renklerini belirtmek için renk değişkeni oluşturuyoruz
+    //teamColor ataması RTSNetworkManager da yapılıyor
+    private Color teamColor = new Color();
     private List<Unit> myUnits = new List<Unit>();
     private List<Building> myBuildings = new List<Building>();
+
+    public Color GetTeamColor()
+    {
+        return this.teamColor;
+    }
 
     public int GetResources()
     {
         return this.resources;
-    }
-
-    [Server]
-    public void SetResources(int newResources)
-    {
-        this.resources = newResources;
     }
 
     //playera ait olan unitlara erişebilmek için...
@@ -45,7 +47,6 @@ public class RTSPlayer : NetworkBehaviour
     {
         return myBuildings;
     }
-
 
     //yeni oluşturulacak buildingin, diğer buildinglerimize yakınlığı kontrol ediliyor
     //yakınsa true, değilse false döndürür
@@ -86,6 +87,19 @@ public class RTSPlayer : NetworkBehaviour
         //Player nesnesi Serverda kaldırıldığı zaman, Buildingdeki static Eventlar dinlenilmeyi bırakıyor
         Building.ServerOnBuildingSpawned -= ServerHandleBuildingSpawned;
         Building.ServerOnBuildingDespawned -= ServerHandleBuildingDespawned;
+    }
+
+
+    [Server]
+    public void SetTeamColor(Color newTeamColor)
+    {
+        this.teamColor = newTeamColor;
+    }
+
+    [Server]
+    public void SetResources(int newResources)
+    {
+        this.resources = newResources;
     }
 
     //Buildingi inşa edecek fonksiyondur. BuildingButton scriptinden clientımız sunucuya "buraya building kur" diyecek ve bu fonksiyonu çağıracak

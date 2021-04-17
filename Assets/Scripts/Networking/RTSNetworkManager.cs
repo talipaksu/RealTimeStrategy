@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class RTSNetworkManager : NetworkManager
 {
+    //artık unitBase oldu
     [SerializeField] private GameObject unitSpawnerPrefab = null;
     //oyunun bitip bitmediği takibini yapacak nesneyi spawn etmek için refere ediyoruz
     [SerializeField] private GameOverHandler gameOverHandlerPrefab = null;
@@ -14,10 +15,15 @@ public class RTSNetworkManager : NetworkManager
     {
         base.OnServerAddPlayer(conn);
 
-        //sunucuda bir UnitSpawner örneği oluştur
+        RTSPlayer player = conn.identity.GetComponent<RTSPlayer>();
+
+        //player bağlandığında ona random bir renk ataması yapıyoruz
+        player.SetTeamColor(new Color(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f)));
+
+        //sunucuda bir UnitBase örneği oluştur
         GameObject unitSpawnerInstance = Instantiate(unitSpawnerPrefab, conn.identity.transform.position, conn.identity.transform.rotation);
 
-        //sunucuda oluşan UnitSpawner örneğini player ile ilişkilendir connection üzerinden
+        //sunucuda oluşan UnitBase örneğini player ile ilişkilendir connection üzerinden
         NetworkServer.Spawn(unitSpawnerInstance, conn);
     }
 
