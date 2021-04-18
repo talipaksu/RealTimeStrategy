@@ -20,13 +20,24 @@ public class RTSPlayer : NetworkBehaviour
     //sunucu değeri değiştirince clientlara, value değişti der ve ClientHandleResourcesUpdated metodu clientlarda çalışır
     [SyncVar(hook = nameof(ClientHandleResourcesUpdated))]
     private int resources = 500;
+
+    //kullanıcının party sahibi olup olmadığını SyncVar yaptık. sunucu set edecek diğer herkes görecek diye
+    [SyncVar(hook = nameof(AuthorityHandlePartyOwnerStateUpdated))]
+    private bool isPartyOwner = false;
     public event Action<int> ClientOnResourcesUpdated;
+
+    public static event Action<bool> AuthorityOnPartyOwnerStateUpdated;
 
     //takımların renklerini belirtmek için renk değişkeni oluşturuyoruz
     //teamColor ataması RTSNetworkManager da yapılıyor
     private Color teamColor = new Color();
     private List<Unit> myUnits = new List<Unit>();
     private List<Building> myBuildings = new List<Building>();
+
+    public bool GetIsPartyOwner()
+    {
+        return isPartyOwner;
+    }
 
     public Transform GetCameraTransform()
     {
@@ -98,6 +109,12 @@ public class RTSPlayer : NetworkBehaviour
 
 
     [Server]
+    public void SetIsPartyOwner(bool state)
+    {
+        isPartyOwner = state;
+    }
+
+    [Server]
     public void SetTeamColor(Color newTeamColor)
     {
         this.teamColor = newTeamColor;
@@ -108,6 +125,16 @@ public class RTSPlayer : NetworkBehaviour
     {
         this.resources = newResources;
     }
+
+
+    [Command]
+    public void CmdStartGame()
+    {
+        if (!isPartyOwner) { return; }
+
+        ((RTSNetworkManager)NetworkManager.singleton).StartGame();
+    }
+
 
     //Buildingi inşa edecek fonksiyondur. BuildingButton scriptinden clientımız sunucuya "buraya building kur" diyecek ve bu fonksiyonu çağıracak
     //bütün objeyi networkte göndermek yerine sadece id sini göndererek sunucudan ilgili buildingi inşa etmesini istiyoruz
@@ -196,10 +223,27 @@ public class RTSPlayer : NetworkBehaviour
         Building.AuthorityOnBuildingDespawned += AuthorityHandleBuildingDespawned;
     }
 
+    public override void OnStartClient()
+    {
+        //host ve client aynı makinede olduğunda kullanıcı çiftlememek adına kontrol ediyoruz.
+        if (NetworkServer.active) { return; }
+
+        //playerımızı RTSNetworkManagerdaki Players listesine ekliyoruz
+        ((RTSNetworkManager)NetworkManager.singleton).Players.Add(this);
+
+    }
+
     public override void OnStopClient()
     {
-        //sunucu isek ya da yetkimiz yoksa fonksiyondan çık
-        if (!isClientOnly || !hasAuthority) { return; }
+        //sunucu isek 
+        if (!isClientOnly) { return; }
+
+        //playerımızı RTSNetworkManagerdaki Players listesinden siliyoruz
+        ((RTSNetworkManager)NetworkManager.singleton).Players.Remove(this);
+
+        //yetkimiz varsa eventlara unsubscribe oluyoruz
+        if (!hasAuthority) { return; }
+
         Unit.AuthorityOnUnitSpawned -= AuthorityHandleUnitSpawned;
         Unit.AuthorityOnUnitDespawned -= AuthorityHandleUnitDespawned;
 
@@ -211,6 +255,14 @@ public class RTSPlayer : NetworkBehaviour
     {
         ClientOnResourcesUpdated?.Invoke(newResources);
     }
+
+    private void AuthorityHandlePartyOwnerStateUpdated(bool oldState, bool newState)
+    {
+        if (!hasAuthority) { return; }
+
+        AuthorityOnPartyOwnerStateUpdated?.Invoke(newState);
+    }
+
 
     private void AuthorityHandleUnitSpawned(Unit unit)
     {
