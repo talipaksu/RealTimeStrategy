@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &915035927914234984
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1201064613624731075}
+  m_Layer: 0
+  m_Name: AimAtPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1201064613624731075
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 915035927914234984}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.68, z: 0.00000011920929}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8190644019898521229}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3277467320781545591
 GameObject:
   m_ObjectHideFlags: 0
@@ -165,6 +195,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e4d8dfe03882c54380948659f725233, type: 3}
+--- !u!1 &7978781691534971612 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 6e4d8dfe03882c54380948659f725233, type: 3}
+  m_PrefabInstance: {fileID: 7978781691534939260}
+  m_PrefabAsset: {fileID: 0}
 --- !u!23 &7978781691537230876 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2300000, guid: 6e4d8dfe03882c54380948659f725233, type: 3}
@@ -245,6 +280,10 @@ PrefabInstance:
       propertyPath: price
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 651124616150682020, guid: 01fa21271104a5743aa62f1b109c901b, type: 3}
+      propertyPath: buildingPreview
+      value: 
+      objectReference: {fileID: 7978781691534971612}
     - target: {fileID: 651124616150682022, guid: 01fa21271104a5743aa62f1b109c901b, type: 3}
       propertyPath: m_Size.x
       value: 2.2
@@ -292,7 +331,7 @@ PrefabInstance:
     - target: {fileID: 758208837910091066, guid: 01fa21271104a5743aa62f1b109c901b, type: 3}
       propertyPath: aimAtPoint
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1201064613624731075}
     - target: {fileID: 915127712797025741, guid: 01fa21271104a5743aa62f1b109c901b, type: 3}
       propertyPath: m_SizeDelta.x
       value: 2
