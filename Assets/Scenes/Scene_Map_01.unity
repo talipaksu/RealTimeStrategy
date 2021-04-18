@@ -148,7 +148,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 248177019}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 40, y: 0.5, z: -40}
+  m_LocalPosition: {x: 40, y: 1, z: -40}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -310,7 +310,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 402155224}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -40, y: 0.5, z: 40}
+  m_LocalPosition: {x: -40, y: 1, z: 40}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -371,6 +371,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1391243798279225701, guid: d889bd10e9bbab14ba253cf3e81f3841, type: 3}
+      propertyPath: building
+      value: 
+      objectReference: {fileID: 7560608142082460773, guid: 231e4702d792c9848bab6f1410f98b48, type: 3}
     - target: {fileID: 5316364192077912218, guid: d889bd10e9bbab14ba253cf3e81f3841, type: 3}
       propertyPath: m_Name
       value: BuildingsDisplay
@@ -422,7 +426,7 @@ PrefabInstance:
     - target: {fileID: 8055649378533453296, guid: d889bd10e9bbab14ba253cf3e81f3841, type: 3}
       propertyPath: building
       value: 
-      objectReference: {fileID: 8190644019898521224, guid: bb63f4b67e32b174097f111e27a37d87, type: 3}
+      objectReference: {fileID: 7560608142082460773, guid: 1179612a31692ef46bf32919ee0464b9, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d889bd10e9bbab14ba253cf3e81f3841, type: 3}
 --- !u!1001 &848294737
@@ -887,7 +891,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1359861429}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -40, y: 0.5, z: -40}
+  m_LocalPosition: {x: -40, y: 1, z: -40}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1244,7 +1248,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1941421895}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 40, y: 0.5, z: 40}
+  m_LocalPosition: {x: 40, y: 1, z: 40}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

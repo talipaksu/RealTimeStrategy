@@ -130,6 +130,46 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 52888010856936380, guid: cd0bddfd081de4541855fe6541aeb027, type: 3}
+      propertyPath: spawnPrefabs.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 52888010856936380, guid: cd0bddfd081de4541855fe6541aeb027, type: 3}
+      propertyPath: spawnPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 8190644019898521231, guid: 508718a690cc8b246aec80d6e59675a4, type: 3}
+    - target: {fileID: 52888010856936380, guid: cd0bddfd081de4541855fe6541aeb027, type: 3}
+      propertyPath: spawnPrefabs.Array.data[1]
+      value: 
+      objectReference: {fileID: 8942601763387375757, guid: 199a78f8e52314d499ed5b223f2ec8ac, type: 3}
+    - target: {fileID: 52888010856936380, guid: cd0bddfd081de4541855fe6541aeb027, type: 3}
+      propertyPath: spawnPrefabs.Array.data[2]
+      value: 
+      objectReference: {fileID: 8190644019898521231, guid: 0a289408f50111e409e790cf7aa39e03, type: 3}
+    - target: {fileID: 52888010856936380, guid: cd0bddfd081de4541855fe6541aeb027, type: 3}
+      propertyPath: spawnPrefabs.Array.data[3]
+      value: 
+      objectReference: {fileID: 1996841092881339662, guid: a0863a5e19442734abddb66aaa6c0690, type: 3}
+    - target: {fileID: 52888010856936380, guid: cd0bddfd081de4541855fe6541aeb027, type: 3}
+      propertyPath: spawnPrefabs.Array.data[4]
+      value: 
+      objectReference: {fileID: 5457910987004963668, guid: 9fd29908145f88a42b178a927c4bfe20, type: 3}
+    - target: {fileID: 52888010856936380, guid: cd0bddfd081de4541855fe6541aeb027, type: 3}
+      propertyPath: spawnPrefabs.Array.data[5]
+      value: 
+      objectReference: {fileID: 7560608142082460770, guid: 1179612a31692ef46bf32919ee0464b9, type: 3}
+    - target: {fileID: 52888010856936380, guid: cd0bddfd081de4541855fe6541aeb027, type: 3}
+      propertyPath: spawnPrefabs.Array.data[6]
+      value: 
+      objectReference: {fileID: 1996841092881339662, guid: fe32466dc3d95574aa943ea6687c8980, type: 3}
+    - target: {fileID: 52888010856936380, guid: cd0bddfd081de4541855fe6541aeb027, type: 3}
+      propertyPath: spawnPrefabs.Array.data[7]
+      value: 
+      objectReference: {fileID: 5457910987004963668, guid: 544c8619155ea294aabd972971244bf0, type: 3}
+    - target: {fileID: 52888010856936380, guid: cd0bddfd081de4541855fe6541aeb027, type: 3}
+      propertyPath: spawnPrefabs.Array.data[8]
+      value: 
+      objectReference: {fileID: 7560608142082460770, guid: 231e4702d792c9848bab6f1410f98b48, type: 3}
     - target: {fileID: 52888010856936384, guid: cd0bddfd081de4541855fe6541aeb027, type: 3}
       propertyPath: m_Name
       value: NetworkManager
