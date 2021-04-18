@@ -24,8 +24,14 @@ public class RTSPlayer : NetworkBehaviour
     //kullanıcının party sahibi olup olmadığını SyncVar yaptık. sunucu set edecek diğer herkes görecek diye
     [SyncVar(hook = nameof(AuthorityHandlePartyOwnerStateUpdated))]
     private bool isPartyOwner = false;
-    public event Action<int> ClientOnResourcesUpdated;
 
+    //tüm katılımcıların göreceği bir player adı değişkeni oluşturuyoruz
+    //SyncVar yapıyoruz ki herkeste güncellensin
+    [SyncVar(hook = nameof(ClientHandleDisplayNameUpdated))]
+    private String displayName;    
+    public event Action<int> ClientOnResourcesUpdated;
+    //playerla ilgili state değişikliği varsa fırlatılacak event
+    public static event Action ClientOnInfoUpdated;
     public static event Action<bool> AuthorityOnPartyOwnerStateUpdated;
 
     //takımların renklerini belirtmek için renk değişkeni oluşturuyoruz
@@ -37,6 +43,11 @@ public class RTSPlayer : NetworkBehaviour
     public bool GetIsPartyOwner()
     {
         return isPartyOwner;
+    }
+
+    public string GetDisplayName()
+    {
+        return displayName;
     }
 
     public Transform GetCameraTransform()
@@ -94,6 +105,10 @@ public class RTSPlayer : NetworkBehaviour
         //Player nesnesi Serverda oluşturulduğu zaman, Buildingdeki static Eventlar dinlenilmeye başlanıyor
         Building.ServerOnBuildingSpawned += ServerHandleBuildingSpawned;
         Building.ServerOnBuildingDespawned += ServerHandleBuildingDespawned;
+
+        //unity scene değiştiğinde tüm objeleri siler
+        //lobbyden oyun sahnesine geçerken playerımızın silinmemesi için...
+        DontDestroyOnLoad(gameObject);
     }
 
     public override void OnStopServer()
@@ -112,6 +127,12 @@ public class RTSPlayer : NetworkBehaviour
     public void SetIsPartyOwner(bool state)
     {
         isPartyOwner = state;
+    }
+
+    [Server]
+    public void SetDisplayName(string displayName)
+    {
+        this.displayName = displayName;
     }
 
     [Server]
@@ -228,6 +249,10 @@ public class RTSPlayer : NetworkBehaviour
         //host ve client aynı makinede olduğunda kullanıcı çiftlememek adına kontrol ediyoruz.
         if (NetworkServer.active) { return; }
 
+        //unity scene değiştiğinde tüm objeleri siler
+        //lobbyden oyun sahnesine geçerken playerımızın silinmemesi için...
+        DontDestroyOnLoad(gameObject);
+
         //playerımızı RTSNetworkManagerdaki Players listesine ekliyoruz
         ((RTSNetworkManager)NetworkManager.singleton).Players.Add(this);
 
@@ -235,6 +260,9 @@ public class RTSPlayer : NetworkBehaviour
 
     public override void OnStopClient()
     {
+        //playerla ilgili state değişikliği var, fırlat
+        ClientOnInfoUpdated?.Invoke();
+
         //sunucu isek 
         if (!isClientOnly) { return; }
 
@@ -254,6 +282,12 @@ public class RTSPlayer : NetworkBehaviour
     private void ClientHandleResourcesUpdated(int oldResources, int newResources)
     {
         ClientOnResourcesUpdated?.Invoke(newResources);
+    }
+
+    private void ClientHandleDisplayNameUpdated(string oldDisplayName, string newDisplayName)
+    {
+        //playerla ilgili state değişikliği var, fırlat
+        ClientOnInfoUpdated?.Invoke();
     }
 
     private void AuthorityHandlePartyOwnerStateUpdated(bool oldState, bool newState)

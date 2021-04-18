@@ -26,6 +26,9 @@ public class UnitSelectionHandler : MonoBehaviour
     {
         mainCamera = Camera.main;
 
+        //connection üzerinden bu connectiona ait RTSPlayer nesnemize erişiyoruz. Bunun üzerinden de sakladığımız unit listemize erişeceğiz
+        player = NetworkClient.connection.identity.GetComponent<RTSPlayer>();
+
         //Unit yokedildiğinde elimizdeki unit listesinden de silinmesi için yokedilme eventini dinlemeye başlıyoruz
         Unit.AuthorityOnUnitDespawned += AuthorityHandleUnitDespawned;
 
@@ -42,11 +45,7 @@ public class UnitSelectionHandler : MonoBehaviour
 
     private void Update()
     {
-        if (player == null)
-        {
-            //connection üzerinden bu connectiona ait RTSPlayer nesnemize erişiyoruz. Bunun üzerinden de sakladığımız unit listemize erişeceğiz
-            player = NetworkClient.connection.identity.GetComponent<RTSPlayer>();
-        }
+
 
         //eğer içinde bulunduğum framede mouse left clicke basarsam
         if (Mouse.current.leftButton.wasPressedThisFrame)
