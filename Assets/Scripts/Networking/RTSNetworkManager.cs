@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.SceneManagement;
+using System;
 
 public class RTSNetworkManager : NetworkManager
 {
@@ -10,6 +11,23 @@ public class RTSNetworkManager : NetworkManager
     [SerializeField] private GameObject unitSpawnerPrefab = null;
     //oyunun bitip bitmediği takibini yapacak nesneyi spawn etmek için refere ediyoruz
     [SerializeField] private GameOverHandler gameOverHandlerPrefab = null;
+
+    public static event Action ClientOnConnected;
+    public static event Action ClientOnDisconnected;
+
+    public override void OnClientConnect(NetworkConnection conn)
+    {
+        base.OnClientConnect(conn);
+
+        ClientOnConnected?.Invoke();
+    }
+
+    public override void OnClientDisconnect(NetworkConnection conn)
+    {
+        base.OnClientDisconnect(conn);
+
+        ClientOnDisconnected?.Invoke();
+    }
 
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
@@ -20,11 +38,12 @@ public class RTSNetworkManager : NetworkManager
         //player bağlandığında ona random bir renk ataması yapıyoruz
         player.SetTeamColor(new Color(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f)));
 
+        /*
         //sunucuda bir UnitBase örneği oluştur
         GameObject unitSpawnerInstance = Instantiate(unitSpawnerPrefab, conn.identity.transform.position, conn.identity.transform.rotation);
 
         //sunucuda oluşan UnitBase örneğini player ile ilişkilendir connection üzerinden
-        NetworkServer.Spawn(unitSpawnerInstance, conn);
+        NetworkServer.Spawn(unitSpawnerInstance, conn);*/
     }
 
     //sahne değiştiği andan hemen sonra tetiklenir.
